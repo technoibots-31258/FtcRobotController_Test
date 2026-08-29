@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.HuskyLensSubsystem;
@@ -10,32 +12,50 @@ public class CenterAprilTagCommand extends CommandBase {
 
     private final HuskyLensSubsystem huskyLens;
     private final MecanumDriveSubsystem drive;
+    private final GamepadEx gamepad;
 
     // =========================
-    // AJUSTES
+    // AJUSTE AUTOMÁTICO
     // =========================
 
-    // Potência de correção esquerda/direita
-    private static final double POTENCIA_LATERAL = 0.40;
+    private static final double KP_LATERAL = 0.003;
 
-    // Potência para aproximar/afastar
-    private static final double POTENCIA_DISTANCIA = 0;
+    private static final double MAX_POTENCIA_LATERAL = 0.25;
 
-    // Largura desejada da AprilTag na imagem
-    // Vamos ajustar depois.
-    private static final int TAG_WIDTH_ALVO = 150;
+    private static final int TOLERANCIA_X = 20;
 
-    // Tolerância da distância
+
+    // =========================
+    // DISTÂNCIA
+    // =========================
+
+    // Valor provisório.
+    // Vamos calibrar depois.
+    private static final int TAG_WIDTH_ALVO = 80;
+
     private static final int TOLERANCIA_WIDTH = 5;
+
+    private static final double POTENCIA_DISTANCIA = 0.15;
+
+
+    // =========================
+    // AJUSTE MANUAL
+    // =========================
+
+    // Quanto do joystick permanece disponível
+    // enquanto o LT está pressionado.
+    private static final double MANUAL_FACTOR = 0.25;
 
 
     public CenterAprilTagCommand(
             HuskyLensSubsystem huskyLens,
-            MecanumDriveSubsystem drive
+            MecanumDriveSubsystem drive,
+            GamepadEx gamepad
     ) {
 
         this.huskyLens = huskyLens;
         this.drive = drive;
+        this.gamepad = gamepad;
 
         addRequirements(
                 huskyLens,
@@ -51,46 +71,70 @@ public class CenterAprilTagCommand extends CommandBase {
                 huskyLens.lerAprilTags();
 
 
-        // Nenhuma AprilTag encontrada
+        // =========================
+        // JOYSTICK MANUAL
+        // =========================
+
+        double manualY =
+                gamepad.getLeftY() * MANUAL_FACTOR;
+
+        double manualX =
+                gamepad.getLeftX() * MANUAL_FACTOR;
+
+        double manualRotation =
+                gamepad.getRightX() * MANUAL_FACTOR;
+
+
+        // =========================
+        // NENHUMA TAG
+        // =========================
+
         if (tags.length == 0) {
 
-            drive.stop();
+            // Mesmo sem tag, o piloto
+            // ainda consegue fazer pequenos ajustes.
+            drive.drive(
+                    -manualY,
+                    manualX,
+                    manualRotation
+            );
 
             return;
         }
 
 
-        // Por enquanto usamos a primeira tag encontrada
+        // Por enquanto usa a primeira tag
         HuskyLens.Block tag = tags[0];
 
+
+        // =========================
+        // CORREÇÃO LATERAL
+        // =========================
 
         int erroX =
                 huskyLens.getErroHorizontal(tag);
 
-        int erroWidth =
-                TAG_WIDTH_ALVO - tag.width;
+        double automaticX = 0;
 
 
-        double x = 0;
-        double y = 0;
+        if (Math.abs(erroX) > TOLERANCIA_X) {
+
+            automaticX =
+                    erroX * KP_LATERAL;
 
 
-        // =========================
-        // CENTRALIZAÇÃO HORIZONTAL
-        // =========================
+            // Limita potência
+            if (automaticX > MAX_POTENCIA_LATERAL) {
 
-        if (Math.abs(erroX)
-                > HuskyLensSubsystem.TOLERANCIA_X) {
+                automaticX =
+                        MAX_POTENCIA_LATERAL;
 
-            if (erroX < 0) {
+            } else if (
+                    automaticX < -MAX_POTENCIA_LATERAL
+            ) {
 
-                // Tag está à esquerda
-                x = -POTENCIA_LATERAL;
-
-            } else {
-
-                // Tag está à direita
-                x = POTENCIA_LATERAL;
+                automaticX =
+                        -MAX_POTENCIA_LATERAL;
             }
         }
 
@@ -99,30 +143,52 @@ public class CenterAprilTagCommand extends CommandBase {
         // DISTÂNCIA
         // =========================
 
+        int erroWidth =
+                TAG_WIDTH_ALVO - tag.width;
+
+        double automaticY = 0;
+
+
         if (Math.abs(erroWidth)
                 > TOLERANCIA_WIDTH) {
 
             if (erroWidth > 0) {
 
-                // Tag pequena = robô longe
-                y = POTENCIA_DISTANCIA;
+                // Tag pequena = longe
+                automaticY =
+                        POTENCIA_DISTANCIA;
 
             } else {
 
-                // Tag grande = robô perto
-                y = -POTENCIA_DISTANCIA;
+                // Tag grande = perto
+                automaticY =
+                        -POTENCIA_DISTANCIA;
             }
         }
 
 
         // =========================
-        // MOVIMENTO
+        // SOMA AUTOMÁTICO + MANUAL
+        // =========================
+
+        double finalY =
+                automaticY - manualY;
+
+        double finalX =
+                automaticX + manualX;
+
+        double finalRotation =
+                manualRotation;
+
+
+        // =========================
+        // DRIVE
         // =========================
 
         drive.drive(
-                y,
-                x,
-                0
+                finalY,
+                finalX,
+                finalRotation
         );
     }
 

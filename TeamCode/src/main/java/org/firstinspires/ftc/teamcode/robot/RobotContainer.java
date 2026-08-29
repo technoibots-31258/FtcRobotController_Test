@@ -33,7 +33,8 @@ public class RobotContainer {
             GamepadEx driverGamepad
     ) {
 
-        this.driverGamepad = driverGamepad;
+        this.driverGamepad =
+                driverGamepad;
 
 
         // =========================
@@ -41,7 +42,9 @@ public class RobotContainer {
         // =========================
 
         driveSubsystem =
-                new MecanumDriveSubsystem(hardwareMap);
+                new MecanumDriveSubsystem(
+                        hardwareMap
+                );
 
 
         // =========================
@@ -49,7 +52,9 @@ public class RobotContainer {
         // =========================
 
         elevatorSubsystem =
-                new ElevatorSubsystem(hardwareMap);
+                new ElevatorSubsystem(
+                        hardwareMap
+                );
 
 
         // =========================
@@ -57,7 +62,9 @@ public class RobotContainer {
         // =========================
 
         huskyLensSubsystem =
-                new HuskyLensSubsystem(hardwareMap);
+                new HuskyLensSubsystem(
+                        hardwareMap
+                );
 
 
         configureDefaultCommands();
@@ -68,10 +75,11 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
 
-        // Drivetrain normal
+        // Drive normal
         driveSubsystem.setDefaultCommand(
 
                 new DriveCommand(
+
                         driveSubsystem,
 
                         () -> driverGamepad.getLeftY(),
@@ -87,7 +95,9 @@ public class RobotContainer {
         elevatorSubsystem.setDefaultCommand(
 
                 new ElevatorCommand(
+
                         elevatorSubsystem,
+
                         driverGamepad
                 )
         );
@@ -104,7 +114,8 @@ public class RobotContainer {
 
                 new CenterAprilTagCommand(
                         huskyLensSubsystem,
-                        driveSubsystem
+                        driveSubsystem,
+                        driverGamepad
                 )
         );
     }
