@@ -16,4 +16,13 @@ public final class Constants {
         private DriveConstants() {
         }
     }
+
+    public static final class ElevatorConstants {
+
+        public static final String ELEVATOR_NAME = "Elevator1";
+
+        private ElevatorConstants() {
+        }
+    }
 }
+

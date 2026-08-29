@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.ElevatorCommand;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ElevatorSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 
 
@@ -13,6 +15,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 public class RobotContainer {
 
     public final MecanumDriveSubsystem driveSubsystem;
+
+    public final ElevatorSubsystem elevatorSubsystem;
 
     private final GamepadEx driverGamepad;
 
@@ -25,17 +29,33 @@ public class RobotContainer {
         this.driverGamepad = driverGamepad;
 
 
-        // Cria o drivetrain
-        driveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+        // =========================
+        // DRIVETRAIN
+        // =========================
+
+        driveSubsystem =
+                new MecanumDriveSubsystem(hardwareMap);
 
 
-        // Configura comandos padrão
+        // =========================
+        // ELEVADOR
+        // =========================
+
+        elevatorSubsystem =
+                new ElevatorSubsystem(hardwareMap);
+
+
+        // =========================
+        // COMMANDS
+        // =========================
+
         configureDefaultCommands();
     }
 
 
     private void configureDefaultCommands() {
 
+        // Drivetrain
         driveSubsystem.setDefaultCommand(
 
                 new DriveCommand(
@@ -47,6 +67,16 @@ public class RobotContainer {
                         driverGamepad::getLeftX,
 
                         driverGamepad::getRightX
+                )
+        );
+
+
+        // Elevador
+        elevatorSubsystem.setDefaultCommand(
+
+                new ElevatorCommand(
+                        elevatorSubsystem,
+                        driverGamepad
                 )
         );
     }
