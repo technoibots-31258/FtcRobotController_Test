@@ -19,7 +19,7 @@ public class Constants {
                     .mass(5.0) // TROQUE pela massa real do robô em kg (peso na balança)
 
                     .translationalPIDFCoefficients(new PIDFCoefficients(
-                            0.1, 0, 0, 0.015
+                            0.15, 0, 0, 0.015
                     ))
 
                     .headingPIDFCoefficients(new PIDFCoefficients(
