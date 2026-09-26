@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.Constants.DriveConstants;
@@ -43,8 +44,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         // Direção dos motores
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
         // Brake
@@ -75,10 +76,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
      */
     public void drive(double y, double x, double rx) {
 
-        double frontLeftPower = y + x + rx;
-        double backLeftPower = y - x + rx;
-        double frontRightPower = y - x - rx;
-        double backRightPower = y + x - rx;
+        double frontLeftPower = y - x - rx;
+        double backLeftPower = y + x - rx;
+        double frontRightPower = y - x + rx;
+        double backRightPower = y + x + rx;
 
 
         // Normalização

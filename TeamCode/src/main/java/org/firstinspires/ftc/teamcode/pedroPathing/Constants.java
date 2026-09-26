@@ -42,7 +42,7 @@ public class Constants {
                     .leftFrontMotorName("frontleft")
 
                     .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-                    .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+                    .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
                     .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
                     .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -56,12 +56,12 @@ public class Constants {
                     .leftFrontMotorName("frontleft")
 
                     .leftFrontEncoderDirection(Encoder.REVERSE)
-                    .leftRearEncoderDirection(Encoder.FORWARD)
+                    .leftRearEncoderDirection(Encoder.REVERSE)
                     .rightFrontEncoderDirection(Encoder.REVERSE)
                     .rightRearEncoderDirection(Encoder.REVERSE)
 
-                    .robotWidth(15)  // TROQUE pela largura real do chassi em polegadas
-                    .robotLength(16) // TROQUE pelo comprimento real do chassi em polegadas
+                    .robotWidth(13.5)  // TROQUE pela largura real do chassi em polegadas
+                    .robotLength(13.2) // TROQUE pelo comprimento real do chassi em polegadas
 
                     // Valores calculados p/ REV HD Hex Motor 15:1 nominal + roda mecanum 75mm
                     // OBRIGATÓRIO rodar o Tuning OpMode (forward/lateral/turn) para calibrar de verdade

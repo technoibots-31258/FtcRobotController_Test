@@ -2,61 +2,63 @@ package org.firstinspires.ftc.teamcode.robot.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
-
 import java.util.function.DoubleSupplier;
 
+import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 
-/**
- * Command responsável pelo controle manual do drivetrain.
- */
 public class DriveCommand extends CommandBase {
 
     private final MecanumDriveSubsystem driveSubsystem;
 
     private final DoubleSupplier ySupplier;
     private final DoubleSupplier xSupplier;
-    private final DoubleSupplier rotationSupplier;
-
+    private final DoubleSupplier rxSupplier;
 
     public DriveCommand(
-
             MecanumDriveSubsystem driveSubsystem,
-
             DoubleSupplier ySupplier,
-
             DoubleSupplier xSupplier,
-
-            DoubleSupplier rotationSupplier
+            DoubleSupplier rxSupplier
     ) {
 
         this.driveSubsystem = driveSubsystem;
 
         this.ySupplier = ySupplier;
         this.xSupplier = xSupplier;
-        this.rotationSupplier = rotationSupplier;
+        this.rxSupplier = rxSupplier;
 
-
-        // Este command usa o drivetrain
         addRequirements(driveSubsystem);
     }
-
 
     @Override
     public void execute() {
 
-        double y = ySupplier.getAsDouble();
-        double x = xSupplier.getAsDouble();
-        double rotation = rotationSupplier.getAsDouble();
+        // Frente / trás
+        double y =
+                -ySupplier.getAsDouble();
 
+        // Esquerda / direita
+        double x =
+                xSupplier.getAsDouble();
 
-        driveSubsystem.drive(y, x, rotation);
+        // Rotação
+        double rx =
+                rxSupplier.getAsDouble();
+
+        driveSubsystem.drive(
+                y,
+                x,
+                rx
+        );
     }
-
 
     @Override
     public void end(boolean interrupted) {
-
         driveSubsystem.stop();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 }

@@ -5,13 +5,15 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.robot.commands.CenterAprilTagCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.BufferCommand;
 import org.firstinspires.ftc.teamcode.robot.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.robot.commands.ElevatorCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.robot.commands.ShooterCommand;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.ElevatorSubsystem;
-import org.firstinspires.ftc.teamcode.robot.subsystems.HuskyLensSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.BufferSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterSubsystem;
 
 
 /**
@@ -21,9 +23,11 @@ public class RobotContainer {
 
     public final MecanumDriveSubsystem driveSubsystem;
 
-    public final ElevatorSubsystem elevatorSubsystem;
+    public final IntakeSubsystem intakeSubsystem;
 
-    public final HuskyLensSubsystem huskyLensSubsystem;
+    public final BufferSubsystem bufferSubsystem;
+
+    public final ShooterSubsystem shooterSubsystem;
 
     private final GamepadEx driverGamepad;
 
@@ -48,34 +52,51 @@ public class RobotContainer {
 
 
         // =========================
-        // ELEVADOR
+        // INTAKE
         // =========================
 
-        elevatorSubsystem =
-                new ElevatorSubsystem(
+        intakeSubsystem =
+                new IntakeSubsystem(
                         hardwareMap
                 );
 
 
         // =========================
-        // HUSKYLENS
+        // BUFFER
         // =========================
 
-        huskyLensSubsystem =
-                new HuskyLensSubsystem(
+        bufferSubsystem =
+                new BufferSubsystem(
+                        hardwareMap
+                );
+
+
+        // =========================
+        // SHOOTER
+        // =========================
+
+        shooterSubsystem =
+                new ShooterSubsystem(
                         hardwareMap
                 );
 
 
         configureDefaultCommands();
 
-        configureAprilTag();
+        configureIntake();
+
+        configureBuffer();
+
+        configureShooter();
     }
 
 
     private void configureDefaultCommands() {
 
-        // Drive normal
+        // =========================
+        // DRIVE
+        // =========================
+
         driveSubsystem.setDefaultCommand(
 
                 new DriveCommand(
@@ -89,33 +110,94 @@ public class RobotContainer {
                         driverGamepad::getRightX
                 )
         );
-
-
-        // Elevador
-        elevatorSubsystem.setDefaultCommand(
-
-                new ElevatorCommand(
-
-                        elevatorSubsystem,
-
-                        driverGamepad
-                )
-        );
     }
 
 
-    private void configureAprilTag() {
+    // =====================================================
+    // INTAKE
+    // =====================================================
 
+    private void configureIntake() {
+
+        // RB = puxar bola
+        new Trigger(
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.LEFT_BUMPER
+                )
+        ).whileActiveContinuous(
+
+                new IntakeCommand(
+                        intakeSubsystem,
+                        1.0
+                )
+        );
+
+
+        // LB = inverter intake
         new Trigger(
                 () -> driverGamepad.getButton(
                         GamepadKeys.Button.A
                 )
         ).whileActiveContinuous(
 
-                new CenterAprilTagCommand(
-                        huskyLensSubsystem,
-                        driveSubsystem,
-                        driverGamepad
+                new IntakeCommand(
+                        intakeSubsystem,
+                        -1.0
+                )
+        );
+    }
+
+
+    // =====================================================
+    // BUFFER
+    // =====================================================
+
+    private void configureBuffer() {
+
+        // A = buffer para frente
+        new Trigger(
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.RIGHT_BUMPER
+                )
+        ).whileActiveContinuous(
+
+                new BufferCommand(
+                        bufferSubsystem,
+                        1.0
+                )
+        );
+
+
+        // B = buffer reverso
+        new Trigger(
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.B
+                )
+        ).whileActiveContinuous(
+
+                new BufferCommand(
+                        bufferSubsystem,
+                        -1.0
+                )
+        );
+    }
+
+
+    // =====================================================
+    // SHOOTER
+    // =====================================================
+
+    private void configureShooter() {
+
+        new Trigger(
+                () -> driverGamepad.getTrigger(
+                        GamepadKeys.Trigger.RIGHT_TRIGGER
+                ) > 0.1
+        ).whileActiveContinuous(
+                new ShooterCommand(
+                        shooterSubsystem,
+                        intakeSubsystem,
+                        bufferSubsystem
                 )
         );
     }
