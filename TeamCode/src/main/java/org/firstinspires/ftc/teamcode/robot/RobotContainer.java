@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.BufferSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.robot.commands.ExpelCommand;
+
 
 
 /**
@@ -88,6 +90,9 @@ public class RobotContainer {
         configureBuffer();
 
         configureShooter();
+
+
+        configureExpel();
     }
 
 
@@ -119,30 +124,14 @@ public class RobotContainer {
 
     private void configureIntake() {
 
-        // RB = puxar bola
         new Trigger(
-                () -> driverGamepad.getButton(
-                        GamepadKeys.Button.LEFT_BUMPER
-                )
+                () -> driverGamepad.getTrigger(
+                        GamepadKeys.Trigger.LEFT_TRIGGER
+                ) > 0.1
         ).whileActiveContinuous(
-
                 new IntakeCommand(
                         intakeSubsystem,
                         1.0
-                )
-        );
-
-
-        // LB = inverter intake
-        new Trigger(
-                () -> driverGamepad.getButton(
-                        GamepadKeys.Button.A
-                )
-        ).whileActiveContinuous(
-
-                new IntakeCommand(
-                        intakeSubsystem,
-                        -1.0
                 )
         );
     }
@@ -183,6 +172,23 @@ public class RobotContainer {
     }
 
 
+
+
+
+    private void configureExpel() {
+
+        new Trigger(
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.LEFT_BUMPER
+                )
+        ).whileActiveContinuous(
+                new ExpelCommand(
+                        intakeSubsystem,
+                        bufferSubsystem,
+                        shooterSubsystem
+                )
+        );
+    }
     // =====================================================
     // SHOOTER
     // =====================================================

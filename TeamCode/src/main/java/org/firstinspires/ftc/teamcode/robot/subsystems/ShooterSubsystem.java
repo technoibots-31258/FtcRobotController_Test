@@ -133,12 +133,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean isAtTargetVelocity() {
 
-        double target = TARGET_VELOCITY;
-        double current = getAverageVelocity();
+        double currentVelocity = getAverageVelocity();
 
-        double tolerance = target * 0.10;
+        double targetForShooting = TARGET_VELOCITY / 2.0;
 
-        return current >= target - tolerance
-                && current <= target + tolerance;
+        double tolerance = targetForShooting * 0.10;
+
+        return currentVelocity >= targetForShooting - tolerance
+                && currentVelocity <= targetForShooting + tolerance;
+    }
+
+    public void reverse() {
+
+        shooter1.setPower(-1.0);
+        shooter2.setPower(-1.0);
     }
 }
