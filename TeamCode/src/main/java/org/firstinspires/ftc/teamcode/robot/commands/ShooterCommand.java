@@ -12,11 +12,11 @@ public class ShooterCommand extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
     private final BufferSubsystem bufferSubsystem;
 
-    // Quanto tempo o RPM precisa permanecer estável
+    // Tempo que o shooter precisa permanecer estável
     private static final long STABILIZATION_TIME_MS = 300;
 
-    // Intake começa antes do buffer
-    private static final long INTAKE_LEAD_TIME_MS = 100;
+    // Tempo de atraso entre Intake e Buffer
+    private static final long INTAKE_LEAD_TIME_MS = 300;
 
     private long stableSince = 0;
     private long intakeStartedAt = 0;
@@ -58,20 +58,35 @@ public class ShooterCommand extends CommandBase {
     public void execute() {
 
         /*
-         * PRIMEIRA ETAPA:
-         * esperar o shooter chegar ao RPM desejado.
+         * Mantém o Shooter funcionando pelo PID.
          */
-        if (!shooterStable) {
+        shooterSubsystem.startShooter();
 
-            if (shooterSubsystem.isAtTargetVelocity()) {
+
+        /*
+         * =====================================================
+         * 1. VERIFICAÇÃO DA VELOCIDADE
+         * =====================================================
+         */
+
+        if (shooterSubsystem.isAtTargetVelocity()) {
+
+            /*
+             * Entrou na faixa correta.
+             *
+             * Começa a contar o tempo de estabilização.
+             */
+            if (!shooterStable) {
 
                 if (stableSince == 0) {
+
                     stableSince =
                             System.currentTimeMillis();
                 }
 
                 /*
-                 * Ficou 300 ms dentro da faixa.
+                 * Precisa permanecer estável durante
+                 * STABILIZATION_TIME_MS.
                  */
                 if (System.currentTimeMillis()
                         - stableSince
@@ -80,8 +95,7 @@ public class ShooterCommand extends CommandBase {
                     shooterStable = true;
 
                     /*
-                     * Assim que estabilizar,
-                     * liga o intake.
+                     * Começa o Intake.
                      */
                     intakeSubsystem.intake(1.0);
 
@@ -90,32 +104,57 @@ public class ShooterCommand extends CommandBase {
                     intakeStartedAt =
                             System.currentTimeMillis();
                 }
-
-            } else {
-
-                /*
-                 * Saiu da faixa.
-                 * Reinicia a contagem.
-                 */
-                stableSince = 0;
             }
+
+        } else {
+
+            /*
+             * =================================================
+             * A VELOCIDADE CAIU
+             * =================================================
+             *
+             * Para de alimentar a bola imediatamente.
+             */
+
+            shooterStable = false;
+
+            stableSince = 0;
+
+            intakeStarted = false;
+            bufferStarted = false;
+
+            intakeStartedAt = 0;
+
+            intakeSubsystem.stop();
+            bufferSubsystem.stop();
         }
 
+
         /*
-         * SEGUNDA ETAPA:
-         * mantém o intake ligado.
+         * =====================================================
+         * 2. INTAKE
+         * =====================================================
+         *
+         * Só funciona enquanto o Shooter estiver estável.
          */
-        if (intakeStarted) {
+
+        if (shooterStable) {
 
             intakeSubsystem.intake(1.0);
         }
 
+
         /*
-         * TERCEIRA ETAPA:
-         * depois de 100 ms de intake,
-         * liga o buffer.
+         * =====================================================
+         * 3. BUFFER
+         * =====================================================
+         *
+         * Espera o Intake funcionar durante
+         * INTAKE_LEAD_TIME_MS antes de liberar o Buffer.
          */
-        if (intakeStarted
+
+        if (shooterStable
+                && intakeStarted
                 && !bufferStarted
                 && System.currentTimeMillis()
                 - intakeStartedAt
@@ -126,10 +165,13 @@ public class ShooterCommand extends CommandBase {
             bufferStarted = true;
         }
 
+
         /*
-         * Mantém o buffer ligado.
+         * Mantém o Buffer funcionando enquanto
+         * o Shooter estiver estável.
          */
-        if (bufferStarted) {
+
+        if (shooterStable && bufferStarted) {
 
             bufferSubsystem.buffer(1.0);
         }

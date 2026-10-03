@@ -14,12 +14,12 @@ public class ShooterSubsystem extends SubsystemBase {
     private final PIDController pidController;
 
     // Velocidade desejada em ticks por segundo
-    private static final double TARGET_VELOCITY = 2080.0;
+    private static final double TARGET_VELOCITY = 1097.0;
 
     // PID inicial
-    private static final double KP = 0.0005;
-    private static final double KI = 0.00001;
-    private static final double KD = 0.00001;
+    private static final double KP = 0.01;
+    private static final double KI = 0.00014;
+    private static final double KD = 0.0001;
 
     private boolean enabled = false;
 
