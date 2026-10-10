@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+
+import org.firstinspires.ftc.teamcode.robot.commands.FeedSequenceCommand;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.commands.BufferCommand;
@@ -15,8 +18,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.robot.commands.ExpelCommand;
-
-
 
 /**
  * Monta os subsystems e commands do robô.
@@ -33,7 +34,6 @@ public class RobotContainer {
 
     private final GamepadEx driverGamepad;
 
-
     public RobotContainer(
             HardwareMap hardwareMap,
             GamepadEx driverGamepad
@@ -41,7 +41,6 @@ public class RobotContainer {
 
         this.driverGamepad =
                 driverGamepad;
-
 
         // =========================
         // DRIVETRAIN
@@ -52,7 +51,6 @@ public class RobotContainer {
                         hardwareMap
                 );
 
-
         // =========================
         // INTAKE
         // =========================
@@ -61,7 +59,6 @@ public class RobotContainer {
                 new IntakeSubsystem(
                         hardwareMap
                 );
-
 
         // =========================
         // BUFFER
@@ -72,7 +69,6 @@ public class RobotContainer {
                         hardwareMap
                 );
 
-
         // =========================
         // SHOOTER
         // =========================
@@ -82,7 +78,6 @@ public class RobotContainer {
                         hardwareMap
                 );
 
-
         configureDefaultCommands();
 
         configureIntake();
@@ -91,10 +86,8 @@ public class RobotContainer {
 
         configureShooter();
 
-
         configureExpel();
     }
-
 
     private void configureDefaultCommands() {
 
@@ -117,7 +110,6 @@ public class RobotContainer {
         );
     }
 
-
     // =====================================================
     // INTAKE
     // =====================================================
@@ -136,44 +128,26 @@ public class RobotContainer {
         );
     }
 
-
     // =====================================================
     // BUFFER
     // =====================================================
 
     private void configureBuffer() {
 
-        // A = buffer para frente
+        // RIGHT_BUMPER: alimenta bola por bola, só com o shooter pronto
         new Trigger(
-                () -> driverGamepad.getButton(
-                        GamepadKeys.Button.RIGHT_BUMPER
-                )
+                () -> driverGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)
         ).whileActiveContinuous(
-
-                new BufferCommand(
-                        bufferSubsystem,
-                        1.0
-                )
+                new FeedSequenceCommand(bufferSubsystem, shooterSubsystem)
         );
 
-
-        // B = buffer reverso
+        // B: buffer reverso
         new Trigger(
-                () -> driverGamepad.getButton(
-                        GamepadKeys.Button.B
-                )
+                () -> driverGamepad.getButton(GamepadKeys.Button.B)
         ).whileActiveContinuous(
-
-                new BufferCommand(
-                        bufferSubsystem,
-                        -1.0
-                )
+                new BufferCommand(bufferSubsystem, 1.0)
         );
     }
-
-
-
-
 
     private void configureExpel() {
 
@@ -201,9 +175,8 @@ public class RobotContainer {
                 ) > 0.1
         ).whileActiveContinuous(
                 new ShooterCommand(
-                        shooterSubsystem,
-                        intakeSubsystem,
-                        bufferSubsystem
+                        shooterSubsystem
+
                 )
         );
     }

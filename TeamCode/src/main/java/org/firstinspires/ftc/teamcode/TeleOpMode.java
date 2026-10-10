@@ -36,6 +36,7 @@ public class TeleOpMode extends CommandOpMode {
 
         super.run();
 
+
         telemetry.addData(
                 "Shooter 1",
                 "%.0f",
@@ -65,6 +66,9 @@ public class TeleOpMode extends CommandOpMode {
                 robotContainer.shooterSubsystem.isAtTargetVelocity()
         );
 
+
+
         telemetry.update();
+
     }
 }

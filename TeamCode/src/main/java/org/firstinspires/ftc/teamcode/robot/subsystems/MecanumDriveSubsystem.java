@@ -43,7 +43,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
         // Direção dos motores
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
@@ -78,8 +78,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
         double frontLeftPower = y - x - rx;
         double backLeftPower = y + x - rx;
-        double frontRightPower = y - x + rx;
-        double backRightPower = y + x + rx;
+        double frontRightPower = y + x + rx;
+        double backRightPower = y - x + rx;
 
 
         // Normalização
