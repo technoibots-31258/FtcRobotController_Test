@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.robot.commands.FeedSequenceCommand;
+//import org.firstinspires.ftc.teamcode.robot.commands.FeedSequenceCommand;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.BufferSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterSubsystem;
-import org.firstinspires.ftc.teamcode.robot.commands.ExpelCommand;
+//import org.firstinspires.ftc.teamcode.robot.commands.ExpelCommand;
 
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 /**
@@ -87,7 +87,7 @@ public class RobotContainer {
 
         configureShooter();
 
-        configureExpel();
+        //configureExpel();
     }
 
     private void configureDefaultCommands() {
@@ -181,48 +181,34 @@ public class RobotContainer {
         );
     }
 
-    private void configureExpel() {
-
-        new Trigger(
-                () -> driverGamepad.getButton(
-                        GamepadKeys.Button.LEFT_BUMPER
-                )
-        ).whileActiveContinuous(
-                new ExpelCommand(
-                        intakeSubsystem,
-                        bufferSubsystem,
-                        shooterSubsystem
-                )
-        );
-    }
+//    private void configureExpel() {
+//
+//        new Trigger(
+//                () -> driverGamepad.getButton(
+//                        GamepadKeys.Button.LEFT_BUMPER
+//                )
+//        ).whileActiveContinuous(
+//                new ExpelCommand(
+//                        intakeSubsystem,
+//                        bufferSubsystem,
+//                        shooterSubsystem
+//                )
+//        );
+//    }
     // =====================================================
     // SHOOTER
     // =====================================================
 
     private void configureShooter() {
 
-        Trigger shootTrigger = new Trigger(
+        new Trigger(
                 () -> driverGamepad.getTrigger(
                         GamepadKeys.Trigger.RIGHT_TRIGGER
                 ) > 0.1
-        );
-
-        // Liga e mantém o shooter funcionando enquanto RT estiver pressionado.
-        shootTrigger.whileActiveContinuous(
+        ).whileActiveContinuous(
                 new ShooterCommand(
                         shooterSubsystem
                 )
         );
-
-        // Aguarda o RPM correto e executa a sequência de alimentação.
-        // Enquanto RT estiver pressionado, a sequência pode ser repetida.
-        shootTrigger.whileActiveContinuous(
-                new FeedSequenceCommand(
-                        bufferSubsystem,
-                        shooterSubsystem,
-                        intakeSubsystem
-                )
-        );
     }
-
 }

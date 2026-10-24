@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robot.RobotContainer;
 
-@TeleOp(name = "TeleOp - Drive Base")
+@TeleOp(name = "TeleOp - SEM PID")
 public class TeleOpMode extends CommandOpMode {
 
     private RobotContainer robotContainer;
@@ -49,22 +49,22 @@ public class TeleOpMode extends CommandOpMode {
                 robotContainer.shooterSubsystem.getVelocity2()
         );
 
-        telemetry.addData(
-                "Media",
-                "%.0f",
-                robotContainer.shooterSubsystem.getAverageVelocity()
-        );
+//        telemetry.addData(
+//                "Media",
+//                "%.0f",
+////                robotContainer.shooterSubsystem.getAverageVelocity()
+//        );
 
-        telemetry.addData(
-                "Alvo",
-                "%.0f",
-                robotContainer.shooterSubsystem.getTargetVelocity()
-        );
+//        telemetry.addData(
+//                "Alvo",
+//                "%.0f",
+//                robotContainer.shooterSubsystem.getTargetVelocity()
+//        );
 
-        telemetry.addData(
-                "RPM OK",
-                robotContainer.shooterSubsystem.isAtTargetVelocity()
-        );
+//        telemetry.addData(
+//                "RPM OK",
+//                robotContainer.shooterSubsystem.isAtTargetVelocity()
+//        );
 
 
 

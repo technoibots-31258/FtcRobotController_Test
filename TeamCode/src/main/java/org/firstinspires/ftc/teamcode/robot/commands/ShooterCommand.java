@@ -9,17 +9,20 @@ public class ShooterCommand extends CommandBase {
 
     private final ShooterSubsystem shooterSubsystem;
 
-    public ShooterCommand(
-            ShooterSubsystem shooterSubsystem
-    ) {
+    public ShooterCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
-
         addRequirements(shooterSubsystem);
     }
 
     @Override
     public void initialize() {
-        shooterSubsystem.startShooter();
+        shooterSubsystem.startPID();
+    }
+
+    @Override
+    public void execute() {
+        // O PID é atualizado pelo periodic()
+        // do ShooterSubsystem.
     }
 
     @Override
