@@ -5,14 +5,16 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 
 public class ShooterSubsystem extends SubsystemBase {
 
     private final DcMotorEx shooter1;
     private final DcMotorEx shooter2;
 
-    // ===== VELOCIDADES ALVO (ticks/s) =====
-    public double TARGET_1 = 950;
+    // ===== VELOCIDADES ALVO =====
+    public double TARGET_1 = 970;
     public double TARGET_2 = 1000;
 
     // ===== GANHOS PID DO MOTOR 1 =====
@@ -117,13 +119,31 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     // Leituras para os testes
+
+    // Tolerancia para autorizar o disparo, em RPM
+    public static final double SHOOTER_THRESHOLD_RPM = 25.0;
+
+    // Velocidade real do motor 1 em RPM
     public double getVelocity1() {
         return Math.abs(shooter1.getVelocity());
     }
 
+    // Velocidade real do motor 2 em RPM
     public double getVelocity2() {
         return Math.abs(shooter2.getVelocity());
     }
+
+    // Erro entre o setpoint e a velocidade real do motor 1
+    public double getError1() {
+        return TARGET_1 - getVelocity1();
+    }
+
+    // Autoriza o disparo somente dentro do threshold
+    public boolean isReadyToShoot() {
+        return pidEnabled
+                && Math.abs(getError1()) <= SHOOTER_THRESHOLD_RPM;
+    }
+
 
     public double getPower1() {
         return shooter1.getPower();
@@ -132,4 +152,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getPower2() {
         return shooter2.getPower();
     }
+
+
 }

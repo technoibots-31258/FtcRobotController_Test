@@ -207,7 +207,7 @@ public class RobotContainer {
                 ) > 0.1
         ).whileActiveContinuous(
                 new ShooterCommand(
-                        shooterSubsystem
+                        shooterSubsystem, intakeSubsystem, bufferSubsystem
                 )
         );
     }
