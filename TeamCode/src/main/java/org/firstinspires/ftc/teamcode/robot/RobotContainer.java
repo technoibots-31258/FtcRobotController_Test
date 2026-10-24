@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.robot.commands.ExpelCommand;
 
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 /**
  * Monta os subsystems e commands do robô.
  */
@@ -123,7 +124,18 @@ public class RobotContainer {
         ).whileActiveContinuous(
                 new IntakeCommand(
                         intakeSubsystem,
-                        1.0
+                        -1.0
+                )
+        );
+        new Trigger(
+                () -> driverGamepad.getTrigger(
+                        GamepadKeys.Trigger.LEFT_TRIGGER
+                ) > 0.1
+        ).whileActiveContinuous(
+
+                new BufferCommand(
+                        bufferSubsystem,
+                        0
                 )
         );
     }
@@ -134,18 +146,38 @@ public class RobotContainer {
 
     private void configureBuffer() {
 
-        // RIGHT_BUMPER: alimenta bola por bola, só com o shooter pronto
+        // RB: intake + buffer simultaneamente para alimentar várias bolas
         new Trigger(
-                () -> driverGamepad.getButton(GamepadKeys.Button.RIGHT_BUMPER)
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.RIGHT_BUMPER
+                )
         ).whileActiveContinuous(
-                new FeedSequenceCommand(bufferSubsystem, shooterSubsystem)
+
+                new ParallelCommandGroup(
+
+                        new IntakeCommand(
+                                intakeSubsystem,
+                                -1.0
+                        ),
+
+                        new BufferCommand(
+                                bufferSubsystem,
+                                -1.0
+                        )
+                )
         );
 
-        // B: buffer reverso
+        // B: buffer no sentido reverso
         new Trigger(
-                () -> driverGamepad.getButton(GamepadKeys.Button.B)
+                () -> driverGamepad.getButton(
+                        GamepadKeys.Button.B
+                )
         ).whileActiveContinuous(
-                new BufferCommand(bufferSubsystem, 1.0)
+
+                new BufferCommand(
+                        bufferSubsystem,
+                        1.0
+                )
         );
     }
 
@@ -169,15 +201,28 @@ public class RobotContainer {
 
     private void configureShooter() {
 
-        new Trigger(
+        Trigger shootTrigger = new Trigger(
                 () -> driverGamepad.getTrigger(
                         GamepadKeys.Trigger.RIGHT_TRIGGER
                 ) > 0.1
-        ).whileActiveContinuous(
+        );
+
+        // Liga e mantém o shooter funcionando enquanto RT estiver pressionado.
+        shootTrigger.whileActiveContinuous(
                 new ShooterCommand(
                         shooterSubsystem
+                )
+        );
 
+        // Aguarda o RPM correto e executa a sequência de alimentação.
+        // Enquanto RT estiver pressionado, a sequência pode ser repetida.
+        shootTrigger.whileActiveContinuous(
+                new FeedSequenceCommand(
+                        bufferSubsystem,
+                        shooterSubsystem,
+                        intakeSubsystem
                 )
         );
     }
+
 }
