@@ -39,7 +39,7 @@ public class ShooterCommand extends CommandBase {
         // do ShooterSubsystem.
         if(shooterSubsystem.isReadyToShoot()){
             intakeSubsystem.intake(-0.6);
-            bufferSubsystem.buffer(-0.7);
+            bufferSubsystem.buffer(-0.6);
         }
     }
 

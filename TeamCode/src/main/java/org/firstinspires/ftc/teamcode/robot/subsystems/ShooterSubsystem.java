@@ -14,8 +14,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final DcMotorEx shooter2;
 
     // ===== VELOCIDADES ALVO =====
-    public double TARGET_1 = 970;
-    public double TARGET_2 = 1000;
+    public double TARGET_1 = 950;
+    public double TARGET_2 = 1050;
 
     // ===== GANHOS PID DO MOTOR 1 =====
     public double P1 = 0.0125;
@@ -121,7 +121,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // Leituras para os testes
 
     // Tolerancia para autorizar o disparo, em RPM
-    public static final double SHOOTER_THRESHOLD_RPM = 25.0;
+    public static final double SHOOTER_THRESHOLD_RPM = 15.0;
 
     // Velocidade real do motor 1 em RPM
     public double getVelocity1() {
