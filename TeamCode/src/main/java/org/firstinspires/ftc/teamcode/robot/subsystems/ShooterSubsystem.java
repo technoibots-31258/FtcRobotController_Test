@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // O erro é (alvoRPM - RPMmedido) / alvoRPM, não RPM bruto.
     // Estes são valores iniciais de teste e devem ser refinados pela telemetria.
     private double kP1 = 0.4;
-    private double kI1 = 0.75;
+    private double kI1 = 0.74;
     private double kD1 = 0.005;
 
     private double kP2 = 0.4;
