@@ -7,40 +7,22 @@ import com.pedropathing.paths.PathChain;
 
 public class ColetaPath {
 
+    public static final double UM_METRO_POL = 100.0 / 2.54; // ≈ 39,37 pol
+
+    // Ponto inicial, usado também pelo AutoPrincipal no setStartingPose
+    public static final Pose START_POSE = new Pose(56.000, 8.000, Math.toRadians(90));
+
     public PathChain MainChain;
 
-
     public ColetaPath(Follower follower) {
-
         MainChain = follower.pathBuilder()
                 .addPath(
                         new BezierLine(
-                                new Pose(56.000, 8.000),
-                                new Pose(56.256, 60.052)
+                                new Pose(START_POSE.getX(), START_POSE.getY()),
+                                new Pose(START_POSE.getX(), START_POSE.getY() + UM_METRO_POL)
                         )
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-                .addPath(
-                        new BezierLine(
-                                new Pose(56.256, 60.052),
-                                new Pose(47.500, 59.860)
-                        )
-                )
-                .setTangentHeadingInterpolation()
-                .addPath(
-                        new BezierLine(
-                                new Pose(47.500, 59.860),
-                                new Pose(63.736, 66.855)
-                        )
-                )
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(-90))
-                .addPath(
-                        new BezierLine(
-                                new Pose(63.736, 66.855),
-                                new Pose(85.035, 27.295)
-                        )
-                )
-                .setTangentHeadingInterpolation()
+                .setConstantHeadingInterpolation(START_POSE.getHeading())
                 .build();
     }
 }

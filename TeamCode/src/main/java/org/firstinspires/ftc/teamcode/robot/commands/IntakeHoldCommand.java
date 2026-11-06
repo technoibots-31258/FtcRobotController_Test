@@ -32,7 +32,7 @@ public class IntakeHoldCommand extends CommandBase {
     @Override
     public void execute() {
         intakeSubsystem.intake(1.0);
-        bufferSubsystem.buffer(-1.0);
+        bufferSubsystem.buffer(-5.0);
     }
 
     @Override

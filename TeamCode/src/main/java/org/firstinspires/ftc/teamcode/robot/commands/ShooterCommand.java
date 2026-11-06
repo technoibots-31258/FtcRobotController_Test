@@ -38,8 +38,8 @@ public class ShooterCommand extends CommandBase {
         // O PID é atualizado pelo periodic()
         // do ShooterSubsystem.
         if(shooterSubsystem.isReadyToShoot()){
-            intakeSubsystem.intake(-0.6);
-            bufferSubsystem.buffer(-0.6);
+            intakeSubsystem.intake(-1);
+            bufferSubsystem.buffer(-1);
         }
     }
 
