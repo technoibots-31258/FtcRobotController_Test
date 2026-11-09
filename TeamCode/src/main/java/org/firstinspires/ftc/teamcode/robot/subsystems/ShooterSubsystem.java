@@ -16,17 +16,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // ===== VELOCIDADES ALVO =====
     public double TARGET_1 = 760;
-    public double TARGET_2 = 850;
+    public double TARGET_2 = 760;
 
     // ===== GANHOS PID DO MOTOR 1 =====
-    public double P1 = 0.015;
+    public double P1 = 0.0005;
     public double I1 = 0.0;
     public double D1 = 0.0;
+    public double F1 = 0.00059;
 
     // ===== GANHOS PID DO MOTOR 2 =====
-    public double P2 = 0.008;
+    public double P2 = 0.0005;
     public double I2 = 0.0;
     public double D2 = 0.0;
+    public double F2 = 0.000357;
 
     private double integral1 = 0;
     private double integral2 = 0;
@@ -86,7 +88,8 @@ public class ShooterSubsystem extends SubsystemBase {
         integral1 += error1 * dt;
         double derivative1 = (error1 - lastError1) / dt;
 
-        double power1 = P1 * error1
+        double power1 = F1 * TARGET_1
+                + P1 * error1
                 + I1 * integral1
                 + D1 * derivative1;
 
@@ -94,7 +97,8 @@ public class ShooterSubsystem extends SubsystemBase {
         integral2 += error2 * dt;
         double derivative2 = (error2 - lastError2) / dt;
 
-        double power2 = P2 * error2
+        double power2 = F2 * TARGET_2
+                + P2 * error2
                 + I2 * integral2
                 + D2 * derivative2;
 
