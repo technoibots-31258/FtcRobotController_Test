@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -14,16 +15,16 @@ public class ShooterSubsystem extends SubsystemBase {
     private final DcMotorEx shooter2;
 
     // ===== VELOCIDADES ALVO =====
-    public double TARGET_1 = 1280;
-    public double TARGET_2 = 0;
+    public double TARGET_1 = 760;
+    public double TARGET_2 = 850;
 
     // ===== GANHOS PID DO MOTOR 1 =====
-    public double P1 = 0.02;
+    public double P1 = 0.015;
     public double I1 = 0.0;
     public double D1 = 0.0;
 
     // ===== GANHOS PID DO MOTOR 2 =====
-    public double P2 = 0.0012;
+    public double P2 = 0.008;
     public double I2 = 0.0;
     public double D2 = 0.0;
 
@@ -121,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // Leituras para os testes
 
     // Tolerancia para autorizar o disparo, em RPM
-    public static final double SHOOTER_THRESHOLD_RPM = 3.0;
+    public static final double SHOOTER_THRESHOLD_RPM = 5;
 
     // Velocidade real do motor 1 em RPM
     public double getVelocity1() {
@@ -152,6 +153,17 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getPower2() {
         return shooter2.getPower();
     }
+    // Gira os dois motores direto, sem PID.
+// Positivo = sentido do chute | Negativo = sentido contrário.
+    public void setManualPower(double power1, double power2) {
+        pidEnabled = false;   // desliga o PID para o periodic() não sobrescrever
+        integral1 = 0;
+        integral2 = 0;
+
+        shooter1.setPower(Math.max(-1.0, Math.min(1.0, power1)));
+        shooter2.setPower(Math.max(-1.0, Math.min(1.0, power2)));
+    }
+
 
 
 }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robot.RobotContainer;
@@ -14,61 +13,55 @@ public class TeleOpMode extends CommandOpMode {
     @Override
     public void initialize() {
 
-        GamepadEx driverGamepad =
-                new GamepadEx(gamepad1);
-
-        robotContainer =
-                new RobotContainer(
-                        hardwareMap,
-                        driverGamepad
-                );
-
-        telemetry.addData(
-                "Status",
-                "Mecanum inicializado"
+        // gamepad1 = controle 1 (driver) | gamepad2 = controle 2 (operator)
+        robotContainer = new RobotContainer(
+                hardwareMap,
+                gamepad1,
+                gamepad2
         );
 
+        telemetry.addData("Status", "Mecanum inicializado");
+        telemetry.addData("Modo", "1 controle (Share + Options troca)");
         telemetry.update();
     }
 
     @Override
     public void run() {
 
+        // Atualiza os botões dos dois controles antes do scheduler
+        robotContainer.update();
+
+        // Roda o CommandScheduler
         super.run();
 
+        // =========================
+        // TELEMETRIA
+        // =========================
 
         telemetry.addData(
-                "Shooter 1",
+                "Modo",
+                robotContainer.isTwoControllers() ? "2 controles" : "1 controle"
+        );
+
+        telemetry.addData(
+                "Flor",
+                robotContainer.flowerSubsystem.isUp() ? "Em cima" : "No chao"
+        );
+
+        telemetry.addData(
+                "Shooter 1 (ticks/s)",
                 "%.0f",
                 robotContainer.shooterSubsystem.getVelocity1()
         );
 
         telemetry.addData(
-                "Shooter 2",
+                "Shooter 2 (ticks/s)",
                 "%.0f",
                 robotContainer.shooterSubsystem.getVelocity2()
         );
 
-//        telemetry.addData(
-//                "Media",
-//                "%.0f",
-////                robotContainer.shooterSubsystem.getAverageVelocity()
-//        );
-
-//        telemetry.addData(
-//                "Alvo",
-//                "%.0f",
-//                robotContainer.shooterSubsystem.getTargetVelocity()
-//        );
-
-//        telemetry.addData(
-//                "RPM OK",
-//                robotContainer.shooterSubsystem.isAtTargetVelocity()
-//        );
-
 
 
         telemetry.update();
-
     }
 }

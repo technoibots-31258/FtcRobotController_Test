@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.robot.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
@@ -25,8 +24,6 @@ public class ShooterCommand extends CommandBase {
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(shooterSubsystem, intakeSubsystem, bufferSubsystem);
     }
-
-
 
     @Override
     public void initialize() {
