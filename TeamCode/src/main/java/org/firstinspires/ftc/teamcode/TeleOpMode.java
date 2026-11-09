@@ -28,15 +28,8 @@ public class TeleOpMode extends CommandOpMode {
     @Override
     public void run() {
 
-        // Atualiza os botões dos dois controles antes do scheduler
         robotContainer.update();
-
-        // Roda o CommandScheduler
         super.run();
-
-        // =========================
-        // TELEMETRIA
-        // =========================
 
         telemetry.addData(
                 "Modo",
@@ -44,23 +37,36 @@ public class TeleOpMode extends CommandOpMode {
         );
 
         telemetry.addData(
-                "Flor",
-                robotContainer.flowerSubsystem.isUp() ? "Em cima" : "No chao"
+                "TARGET (D-pad +/-20)",
+                "%.0f",
+                robotContainer.shooterSubsystem.getTarget()
         );
 
         telemetry.addData(
-                "Shooter 1 (ticks/s)",
-                "%.0f",
-                robotContainer.shooterSubsystem.getVelocity1()
+                "Shooter 1 vel / erro",
+                "%.0f / %.0f",
+                robotContainer.shooterSubsystem.getVelocity1(),
+                robotContainer.shooterSubsystem.getError1()
         );
 
         telemetry.addData(
-                "Shooter 2 (ticks/s)",
-                "%.0f",
-                robotContainer.shooterSubsystem.getVelocity2()
+                "Shooter 2 vel / erro",
+                "%.0f / %.0f",
+                robotContainer.shooterSubsystem.getVelocity2(),
+                robotContainer.shooterSubsystem.getError2()
         );
 
+        telemetry.addData(
+                "Potencia 1 / 2",
+                "%.2f / %.2f",
+                robotContainer.shooterSubsystem.getPower1(),
+                robotContainer.shooterSubsystem.getPower2()
+        );
 
+        telemetry.addData(
+                "Pronto para chutar",
+                robotContainer.shooterSubsystem.isReadyToShoot()
+        );
 
         telemetry.update();
     }

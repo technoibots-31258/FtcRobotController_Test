@@ -74,6 +74,7 @@ public class RobotContainer {
         configureShooter();
         configureFlower();
         configureExpel();
+        configureTargetAdjust();   // <-- nova
     }
 
     // =====================================================
@@ -297,4 +298,29 @@ public class RobotContainer {
                 )
         );
     }
+
+    // =====================================================
+// AJUSTE DO TARGET DO SHOOTER (D-pad do controle 1)
+// Cima: +20 | Baixo: -20
+// =====================================================
+
+    private void configureTargetAdjust() {
+
+        // Controle 2 no modo 2 controles.
+        // No modo 1 controle, o intakeGamepad() é o controle 1, então o
+        // d-pad continua funcionando mesmo sem o segundo controle.
+        // InstantCommand SEM requisito: não interrompe o ShooterCommand.
+        new Trigger(
+                () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_UP)
+        ).whenActive(
+                new InstantCommand(shooterSubsystem::increaseTarget)
+        );
+
+        new Trigger(
+                () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_DOWN)
+        ).whenActive(
+                new InstantCommand(shooterSubsystem::decreaseTarget)
+        );
+    }
+
 }
