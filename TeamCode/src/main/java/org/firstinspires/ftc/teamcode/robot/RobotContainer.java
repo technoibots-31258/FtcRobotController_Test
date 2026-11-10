@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -269,24 +270,34 @@ public class RobotContainer {
     // Se estiver em cima, desce; se estiver no chão, sobe.
     // =====================================================
 
+
+
     private void configureFlower() {
 
         new Trigger(
                 () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_LEFT)
-        ).whenActive(
-                new InstantCommand(() -> flowerSubsystem.setPower(-1.0))
+        ).whileActiveContinuous(
+                new RunCommand(
+                        () -> flowerSubsystem.setPower(-1.0),
+                        flowerSubsystem
+                )
         ).whenInactive(
-               new InstantCommand(flowerSubsystem::stop)
+                new InstantCommand(flowerSubsystem::stop, flowerSubsystem)
         );
 
         new Trigger(
                 () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_RIGHT)
-        ).whenActive(
-                new InstantCommand(() -> flowerSubsystem.setPower(1.0))
+        ).whileActiveContinuous(
+                new RunCommand(
+                        () -> flowerSubsystem.setPower(1.0),
+                        flowerSubsystem
+                )
         ).whenInactive(
-                new InstantCommand(flowerSubsystem::stop)
+                new InstantCommand(flowerSubsystem::stop, flowerSubsystem)
         );
     }
+
+
 
     // =====================================================
     // EXPEL (A do controle 2, só no modo 2 controles)
