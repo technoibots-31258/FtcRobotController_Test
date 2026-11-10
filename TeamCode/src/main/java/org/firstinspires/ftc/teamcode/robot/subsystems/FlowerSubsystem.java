@@ -14,9 +14,9 @@ public class FlowerSubsystem extends SubsystemBase {
     private static final double DOWN_POWER = -1.0;
 
     // AJUSTE: quanto tempo o servo gira para ir de uma posição à outra
-    private static final double MOVE_TIME_MS = 800;
+    private static final double MOVE_TIME_MS = 1200;
 
-    private boolean isUp = false;       // posição em que ele está/ficou
+    private boolean isUp = true;       // posição em que ele está/ficou
     private boolean moving = false;
     private boolean targetUp = false;
 
@@ -27,31 +27,12 @@ public class FlowerSubsystem extends SubsystemBase {
         flower.setPower(0);
     }
 
-    public void up() {
-        startMove(true);
-    }
 
-    public void down() {
-        startMove(false);
-    }
 
     /** Se estiver em cima, desce; se estiver no chão, sobe. Ignora cliques durante o movimento. */
-    public void toggle() {
-        if (moving) return;
 
-        if (isUp) {
-            down();
-        } else {
-            up();
-        }
-    }
 
-    private void startMove(boolean goUp) {
-        targetUp = goUp;
-        moving = true;
-        timer.reset();
-        flower.setPower(goUp ? UP_POWER : DOWN_POWER);
-    }
+
 
     @Override
     public void periodic() {
@@ -62,11 +43,11 @@ public class FlowerSubsystem extends SubsystemBase {
         }
     }
 
-    public boolean isUp() {
-        return isUp;
+    public void setPower(double power){
+        flower.setPower(power);
+    }
+    public void stop(){
+        flower.setPower(0);
     }
 
-    public boolean isMoving() {
-        return moving;
-    }
 }

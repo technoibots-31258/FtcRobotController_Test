@@ -51,11 +51,11 @@ public class AutoDriveLeft extends CommandOpMode {
     private static final double STRAFE_POWER = 0.5;  // módulo; o sinal é aplicado abaixo
 
     // ----- Movimento: tempos (segundos) -----
-    private static final double TURN_SEC_1 = 0.65;     // tempo do primeiro giro
-    private static final double TURN_SEC_2 = 0.65;      // tempo do segundo giro
-    private static final double STRAIGHT_1_SEC = 1.3;  // reto depois do giro à esquerda
-    private static final double STRAIGHT_2_SEC = 2.43;  // reto depois do giro à direita
-    private static final double STRAFE_LEFT_SEC = 2.7 ;// lateral para a esquerda
+    private static final double TURN_SEC_1 = 0.45;     // tempo do primeiro giro
+    private static final double TURN_SEC_2 = 0.35;      // tempo do segundo giro
+    private static final double STRAIGHT_1_SEC = 1;  // reto depois do giro à esquerda
+    private static final double STRAIGHT_2_SEC = 2;  // reto depois do giro à direita
+    private static final double STRAFE_LEFT_SEC = 3 ;// lateral para a esquerda
     private static final double STOP_SEC = 0.3;        // garante que o robô pare
 
     // =====================================================

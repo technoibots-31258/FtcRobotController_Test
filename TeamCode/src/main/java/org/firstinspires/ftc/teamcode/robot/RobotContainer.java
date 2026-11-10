@@ -272,12 +272,19 @@ public class RobotContainer {
     private void configureFlower() {
 
         new Trigger(
-                this::flowerPressed
+                () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_LEFT)
         ).whenActive(
-                new InstantCommand(
-                        flowerSubsystem::toggle,
-                        flowerSubsystem
-                )
+                new InstantCommand(() -> flowerSubsystem.setPower(-1.0))
+        ).whenInactive(
+               new InstantCommand(flowerSubsystem::stop)
+        );
+
+        new Trigger(
+                () -> intakeGamepad().getButton(GamepadKeys.Button.DPAD_RIGHT)
+        ).whenActive(
+                new InstantCommand(() -> flowerSubsystem.setPower(1.0))
+        ).whenInactive(
+                new InstantCommand(flowerSubsystem::stop)
         );
     }
 
